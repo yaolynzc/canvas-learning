@@ -19,6 +19,7 @@
       // 创建画布
       let canvas = new fabric.Canvas("c");
 
+      /***************** 创建自定义子类 *******************/
       // 创建半圆对象，继承fabric.Object
       let Semicircle = fabric.util.createClass(fabric.Object, {
         type: "semi-circle",
@@ -54,6 +55,51 @@
       // 将半圆添加到画布里
       canvas.add(semicircle);
       console.log("semicircle", semicircle.get("type"));
+
+      /***************** 继承 fabric.js 自带的图形 *******************/
+      // 创建带标签功能的矩形
+      const LabeledRect = fabric.util.createClass(
+        // 要继承的是 fabric 的矩形
+        fabric.Rect,
+        {
+          type: "labeled-rect", // 添加一个 type 属性
+          // 初始化
+          initialize: function (options) {
+            options || (options = {}); // 初始化参数，以免报错
+            this.callSuper("initialize", options); // 继承
+            this.set("label", options.label || ""); // 设置 label ，默认值是空
+            this.set({ width: 100, height: 50 }); // 设置默认宽高
+          },
+          toObject: function () {
+            return fabric.util.object.extend(this.callSuper("toObject"), {
+              label: this.get("label"),
+            });
+          },
+
+          // 添加渲染时的操作
+          _render: function (ctx) {
+            this.callSuper("_render", ctx);
+            ctx.font = this.labelFont || "20px Helevtica";
+            ctx.fillStyle = this.labelFill || "#333";
+            // 将 label 渲染出来
+            ctx.fillText(this.label, -this.width / 2, -this.height / 2 + 20);
+          },
+        }
+      );
+      // 创建标签矩形
+      let labeledRect = new LabeledRect({
+        width: 200,
+        height: 50,
+        left: 100,
+        top: 100,
+        label: "rect-title",
+        fill: "#faa",
+      });
+
+      // 将标签矩形添加到画布中
+      canvas.add(labeledRect);
+
+      // 打印图形信息
       const allGraphics = canvas.getObjects();
       console.log(allGraphics);
     </script>
