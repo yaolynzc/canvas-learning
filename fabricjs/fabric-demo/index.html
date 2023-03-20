@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>fabric.js demo</title>
+    <script src="dist/fabric.min.js"></script>
+  </head>
+
+  <body>
+    <canvas
+      id="c"
+      width="300"
+      height="300"
+      style="border: 1px solid #ccc"
+    ></canvas>
+    <script>
+      // 创建画布
+      let canvas = new fabric.Canvas("c");
+
+      // 创建半圆对象，继承fabric.Object
+      let Semicircle = fabric.util.createClass(fabric.Object, {
+        type: "semi-circle",
+
+        // 初始化
+        initialize(options) {
+          this.callSuper("initialize", options);
+          this.width = 100;
+          this.height = 50;
+        },
+        // 渲染
+        _render(ctx) {
+          ctx.strokeStyle = this.stroke || "#333"; // 初始化描边颜色
+          ctx.lineWidth = this.strokeWidth || 1; // 初始化描边宽度
+          ctx.fillStyle = this.fill || "#333"; // 初始化填充色
+          ctx.beginPath(); // 开始绘制路径
+          ctx.arc(0, -25, 50, 0, (180 * Math.PI) / 180); // 绘制半圆
+          ctx.closePath(); // 结束绘制路径
+          ctx.stroke(); // 描边
+          ctx.fill(); // 填充
+        },
+      });
+
+      // 创建一个半圆
+      let semicircle = new Semicircle({
+        top: 10,
+        left: 10,
+        stroke: "#7bcfa6", // 描边色
+        fill: "#ed5736", // 填充色
+        strokeWidth: 10, // 描边宽度
+      });
+
+      // 将半圆添加到画布里
+      canvas.add(semicircle);
+      console.log("semicircle", semicircle.get("type"));
+      const allGraphics = canvas.getObjects();
+      console.log(allGraphics);
+    </script>
+  </body>
+</html>
